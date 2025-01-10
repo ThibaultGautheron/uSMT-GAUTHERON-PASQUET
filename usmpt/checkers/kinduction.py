@@ -137,8 +137,6 @@ class KInduction(AbstractChecker):
 
         while self.solver.check_sat():
 
-       
-
             info("[K-INDUCTION] > Pop")
             self.solver.pop()
 
