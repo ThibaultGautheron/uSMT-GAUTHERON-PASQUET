@@ -93,12 +93,35 @@ class Induction(AbstractChecker):
     # TODO: Sect. 2.3.2. #
     ######################
     def prove_helper(self) -> Optional[bool]:
-        """ Prover to complete.
+        res_sat1 = False
+        k = 0
+        k_prime = k+1
 
-        Returns
-        -------
-        bool, optional
-            `True` if the formula is inductive, `None` otherwise.
-        """
-        raise NotImplementedError
+        self.solver.write(self.ptnet.smtlib_declare_places(0))
+        self.solver.write(self.ptnet.smtlib_set_initial_marking(0))
+
+        self.solver.write(self.formula.smtlib(0, assertion=True))
+
+        self.solver.push()
+
+        if self.solver.check_sat():
+            return True
+        res_sat1 = self.solver.check_sat()
+
+        self.solver.reset()
+
+        self.solver.write(self.ptnet.smtlib_declare_places(k))
+        self.solver.write(self.ptnet.smtlib_declare_places(k_prime))
+
+        self.solver.write(self.formula.smtlib(k,assertion=True,negation=True))
+        self.solver.write(self.formula.smtlib(k_prime,assertion=True,negation=False))
+        self.solver.write(self.ptnet.smtlib_transition_relation(k,k_prime))
+
+        self.solver.push()
+
+        if not res_sat1 and not self.solver.check_sat():
+            return False
+        
+        return None
+
     ######################
