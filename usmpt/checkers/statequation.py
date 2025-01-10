@@ -118,5 +118,7 @@ class StateEquation(AbstractChecker):
         bool, optional
             `False` if F is proved as not reachable, `None` otherwise.
         """
-        raise NotImplementedError
+        I = self.ptnet.smtlib_get_incidence_matrix()
+
+        
     ######################

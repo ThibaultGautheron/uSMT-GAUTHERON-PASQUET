@@ -29,7 +29,7 @@ __version__ = "1.0"
 
 from re import split
 from sys import exit
-from typing import Optional
+from typing import Optional, List
 
 MULTIPLIER_TO_INT = {
     'K': 1000,
@@ -211,6 +211,16 @@ class PetriNet:
  
         return smt_input
     
+    def smtlib_get_incidence_matrix(self) -> List[List[int]]:
+        I = [0]*len(self.places)
+
+        for i,pl in enumerate(self.places):
+            I[i] = [0]*len(self.transitions)
+            for j,tr in enumerate(self.transitions):
+                I[i][j] = -self.pre[tr].get(pl,0) + self.post[tr].get(pl,0)
+
+        return I
+
     ######################
 
     def parse_net(self, filename: str) -> None:
